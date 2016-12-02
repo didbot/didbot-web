@@ -16,33 +16,46 @@
             }
         },
         mounted: function () {
+            var vue = this
+
             this.token = (didbot.apiToken) ? didbot.apiToken : ''
             this.baseUrl = (didbot.baseUrl) ? didbot.baseUrl : 'https://didbot.com/api/1.0/'
 
-            this.getDids()
+            this.getDids(this.baseUrl + 'dids')
             this.$didbotBus.$on('create-did', this.createDid)
             this.$didbotBus.$on('delete-did', this.deleteDid)
 
+            this.$didbotBus.$on('get-dids-by-tag', function (tag_id) {
+                var url = vue.baseUrl + 'dids?client_id=' + tag_id
+                vue.getDids(url)
+            })
+            this.$didbotBus.$on('get-dids-by-client', function (client_id) {
+                var url = vue.baseUrl + 'dids?client_id=' + client_id
+                vue.getDids(url)
+            })
+
             if (navigator.geolocation) {
-                var vue = this
                 navigator.geolocation.getCurrentPosition(function (position) {
                     vue.geo = position.coords.latitude + ',' + position.coords.longitude
                 })
             }
         },
         methods: {
-            getDids(){
-                this.$http.get(this.baseUrl + 'dids', {
+            getDids(url){
+                this.$http.get(url, {
                         headers: {
+                            Accept: 'application/json',
                             Authorization: this.token
                         }})
                         .then(response => {
-                            this.dids = response.body.reverse();
+                            this.dids = response.body.data.reverse();
                         })
             },
             createDid: function (text) {
                 this.$http.post(this.baseUrl + 'dids', {text: text, geo: this.geo}, {
                         headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
                             Authorization: this.token
                         }})
                         .then(response => {

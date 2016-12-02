@@ -8,14 +8,12 @@
         </div>
         <div v-if="details" class="secondary">
             <div class="row">
-                <div class="col-sm-2"><i class="fa fa-desktop" aria-hidden="true"></i> <a href="#">Web</a></div>
+                <div class="col-sm-2"><i class="fa fa-desktop" aria-hidden="true"></i> <a href="#" @click="getDidsByTag($event, client.id)">{{client.name}}</a></div>
                 <div class="col-sm-3"><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="#">Los
                     Angeles</a></div>
                 <div class="col-sm-3">
                     <i class="fa fa-tags" aria-hidden="true"></i>
-                    <a href="#">tag1</a>
-                    <a href="#">tag2</a>
-                    <a href="#">tag3</a>
+                    <a v-for="tag in tags" href="#" @click="getDidsByTag($event, tag.id)">{{tag.text}}</a>
                 </div>
                 <div class="col-sm-4 text-right">
                     {{did.updated_at}}
@@ -33,8 +31,14 @@
         props: ['did'],
         data() {
             return {
-                details: false
+                details: false,
+                client: false,
+                tags: []
             }
+        },
+        mounted: function () {
+            this.client = (this.did.client.data) ? this.did.client.data : ''
+            this.tags = (this.did.tags.data) ? this.did.tags.data : []
         },
         methods: {
             deleteDid(e){
@@ -44,7 +48,15 @@
             showDetails(e){
                 e.preventDefault()
                 this.details = !this.details
-            }
+            },
+            getDidsByTag(e, tag_id){
+                e.preventDefault()
+                this.$didbotBus.$emit('get-dids-by-tag', tag_id)
+            },
+            getDidsByClient(e, client_id){
+                e.preventDefault()
+                this.$didbotBus.$emit('get-dids-by-client', client_id)
+            },
         },
     }
 </script>
