@@ -8,7 +8,8 @@
 
 <script>
     module.exports = {
-        data() {
+        name: 'did-create',
+        data () {
             return {
                 text: null
             }

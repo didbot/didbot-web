@@ -1,2 +1,2 @@
-var DidbotWeb = require('./src/js/app.vue')
+var DidbotWeb = require('./src/App.vue')
 module.exports = DidbotWeb

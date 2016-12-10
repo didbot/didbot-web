@@ -7,10 +7,13 @@
 </template>
 
 <script>
+    import Did from './Did.vue'
+
     module.exports = {
+        name: 'did-list',
         props: ['dids'],
         components: {
-            'did': require('./Did.vue'),
+            Did
         }
     }
 </script>

@@ -28,8 +28,9 @@
 
 <script>
     module.exports = {
+        name: 'did',
         props: ['did'],
-        data() {
+        data () {
             return {
                 details: false,
                 client: false,
@@ -41,22 +42,22 @@
             this.tags = (this.did.tags.data) ? this.did.tags.data : []
         },
         methods: {
-            deleteDid(e){
+            deleteDid (e) {
                 e.preventDefault()
                 this.$didbotBus.$emit('delete-did', this.did.id)
             },
-            showDetails(e){
+            showDetails (e) {
                 e.preventDefault()
                 this.details = !this.details
             },
-            getDidsByTag(e, tag_id){
+            getDidsByTag (e, tagId) {
                 e.preventDefault()
-                this.$didbotBus.$emit('get-dids-by-tag', tag_id)
+                this.$didbotBus.$emit('get-dids-by-tag', tagId)
             },
-            getDidsByClient(e, client_id){
+            getDidsByClient (e, clientId) {
                 e.preventDefault()
-                this.$didbotBus.$emit('get-dids-by-client', client_id)
-            },
-        },
+                this.$didbotBus.$emit('get-dids-by-client', clientId)
+            }
+        }
     }
 </script>
