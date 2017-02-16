@@ -7,8 +7,11 @@ Install didbot-web using the node package manager
 
 `npm install didbot-web --save`
 
-Import the vue component
-```
+Import the vue component and add an event bus
+```js
+const didbotBus = new Vue()
+Vue.prototype.$didbotBus = didbotBus
+
 Vue.component('didbot-web',require('didbot-web'));
 ```
 
@@ -22,7 +25,9 @@ By default this package attempts to connect to the didbot.com API located at `ht
 
 Add the component markup to the desired location inside your vue.js app.
 
-`<didbot-web></didbot-web>`
+```html
+<didbot-web></didbot-web>
+```
 
 ## Development Notes
 
@@ -37,7 +42,7 @@ Create the config/didbot.js file
 
 Set the apiToken and baseUrl properties
 
-```
+```js
 //config.didbot.js
 window.didbot = {
     apiToken: 'YOUR_API_TOKEN',
@@ -46,7 +51,7 @@ window.didbot = {
 ```
 
 ### Available Commands
-```
+```bash
 # serve with hot reload at localhost:8080
 npm run dev
 

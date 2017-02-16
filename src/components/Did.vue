@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="row primary" @click="showDetails($event)">
-            <div class="col-sm-10">{{did.text}}</div>
-            <div class="col-sm-2 text-right secondary">
+            <div class="col-sm-10 did-text">{{did.text}}</div>
+            <div class="col-sm-2 text-right secondary did-created-at">
                 <template v-if="!details">{{did.created_at}} ago</template>
             </div>
         </div>
