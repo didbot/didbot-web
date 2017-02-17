@@ -7,11 +7,8 @@ Install didbot-web using the node package manager
 
 `npm install didbot-web --save`
 
-Import the vue component and add an event bus
+Import the vue component
 ```js
-const didbotBus = new Vue()
-Vue.prototype.$didbotBus = didbotBus
-
 Vue.component('didbot-web',require('didbot-web'));
 ```
 

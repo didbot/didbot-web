@@ -7,11 +7,10 @@
 
 <script>
     import Vue from 'vue'
-    import VueResource from 'vue-resource'
-    Vue.use(VueResource)
 
-    const didbotBus = new Vue()
-    Vue.prototype.$didbotBus = didbotBus
+    import axios from 'axios'
+
+    Vue.prototype.$didbotBus = new Vue()
 
     import DidCreate from './components/DidCreate.vue'
     import DidList from './components/DidList.vue'
@@ -20,15 +19,22 @@
         name: 'app',
         data () {
             return {
-                baseUrl: null,
                 dids: [],
                 geo: null,
-                token: null
+                axios: null
             }
         },
         mounted: function () {
-            this.token = (window.didbot.apiToken) ? window.didbot.apiToken : ''
-            this.baseUrl = (window.didbot.baseUrl) ? window.didbot.baseUrl : 'https://didbot.com/api/1.0/'
+
+            this.axios = axios.create({
+                baseURL: (window.didbot.baseUrl) ? window.didbot.baseUrl : 'https://didbot.com/api/1.0/',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Authorization': (window.didbot.apiToken) ? window.didbot.apiToken : '',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
 
             this.getDids()
             this.$didbotBus.$on('create-did', this.createDid)
@@ -40,43 +46,26 @@
                     vue.geo = position.coords.latitude + ',' + position.coords.longitude
                 })
             }
+
         },
         methods: {
             getDids () {
-                this.$http.get(this.baseUrl + 'dids', {
-                    headers: {
-                        Authorization: this.token,
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                        .then(response => {
-                            this.dids = response.body.data.reverse()
-                        })
+                this.axios.get('dids')
+                    .then(response => {
+                        this.dids = response.data.data.reverse()
+                    })
             },
             createDid: function (text) {
-                this.$http.post(this.baseUrl + 'dids', {text: text, geo: this.geo}, {
-                    headers: {
-                        Authorization: this.token,
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                        .then(response => {
-                            this.getDids()
-                        })
+                this.axios.post('dids', {text: text, geo: this.geo})
+                    .then(response => {
+                        this.getDids()
+                    })
             },
             deleteDid (id) {
-                this.$http.delete(this.baseUrl + 'dids/' + id, {
-                    headers: {
-                        Authorization: this.token,
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                        .then(response => {
-                            this.getDids()
-                        })
+                this.axios.delete('dids/' + id)
+                    .then(response => {
+                        this.getDids()
+                    })
             }
         },
         components: {
