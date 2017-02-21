@@ -44,7 +44,7 @@
         methods: {
             deleteDid (e) {
                 e.preventDefault()
-                this.$didbotBus.$emit('delete-did', this.did.id)
+                didbotBus.$emit('delete-did', this.did.id)
             },
             showDetails (e) {
                 e.preventDefault()
@@ -52,11 +52,11 @@
             },
             getDidsByTag (e, tagId) {
                 e.preventDefault()
-                this.$didbotBus.$emit('get-dids-by-tag', tagId)
+                didbotBus.$emit('get-dids-by-tag', tagId)
             },
             getDidsByClient (e, clientId) {
                 e.preventDefault()
-                this.$didbotBus.$emit('get-dids-by-client', clientId)
+                didbotBus.$emit('get-dids-by-client', clientId)
             }
         }
     }

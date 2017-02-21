@@ -17,7 +17,7 @@
         methods: {
             createDid: function (e) {
                 e.preventDefault()
-                this.$didbotBus.$emit('create-did', this.text)
+                didbotBus.$emit('create-did', this.text)
                 this.text = null
             }
         }

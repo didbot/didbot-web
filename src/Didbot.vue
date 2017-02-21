@@ -10,13 +10,13 @@
 
     import axios from 'axios'
 
-    Vue.prototype.$didbotBus = new Vue()
+    var didbotBus = new Vue()
 
     import DidCreate from './components/DidCreate.vue'
     import DidList from './components/DidList.vue'
 
     export default {
-        name: 'app',
+        name: 'didbot',
         data () {
             return {
                 dids: [],
@@ -25,6 +25,7 @@
             }
         },
         mounted: function () {
+            var didbotApp = this
 
             this.axios = axios.create({
                 baseURL: (window.didbot.baseUrl) ? window.didbot.baseUrl : 'https://didbot.com/api/1.0/',
@@ -37,14 +38,17 @@
             });
 
             this.getDids()
-            this.$didbotBus.$on('create-did', this.createDid)
-            this.$didbotBus.$on('delete-did', this.deleteDid)
+            didbotBus.$on('create-did', this.createDid)
+            didbotBus.$on('delete-did', this.deleteDid)
 
             if (navigator.geolocation) {
-                var vue = this
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    vue.geo = position.coords.latitude + ',' + position.coords.longitude
+                    didbotApp.geo = position.coords.latitude + ',' + position.coords.longitude
+                }, function() {
+                    didbotApp.lookupGeoByIp();
                 })
+            } else {
+                this.lookupGeoByIp();
             }
 
         },
@@ -66,7 +70,14 @@
                     .then(response => {
                         this.getDids()
                     })
+            },
+            lookupGeoByIp () {
+                this.axios.get('https://ipinfo.io')
+                    .then(response => {
+                        this.geo = response.data.loc
+                    })
             }
+
         },
         components: {
             DidList,
