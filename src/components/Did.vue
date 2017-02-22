@@ -3,7 +3,7 @@
         <div class="row primary" @click="showDetails($event)">
             <div class="col-sm-10 did-text">{{did.text}}</div>
             <div class="col-sm-2 text-right secondary did-created-at">
-                <template v-if="!details">{{did.created_at}} ago</template>
+                <template v-if="!details">{{fromNow}}</template>
             </div>
         </div>
         <div v-if="details" class="secondary">
@@ -16,7 +16,7 @@
                     <a v-for="tag in tags" href="#" @click="getDidsByTag($event, tag.id)">{{tag.text}}</a>
                 </div>
                 <div class="col-sm-4 text-right">
-                    {{did.updated_at}}
+                    {{createdAt}}
                 </div>
             </div>
             <div class="row">
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+    import moment from 'moment'
+
     module.exports = {
         name: 'did',
         props: ['did'],
@@ -34,17 +36,23 @@
             return {
                 details: false,
                 client: false,
+                fromNow: null,
+                createdAt: null,
                 tags: []
             }
         },
         mounted: function () {
             this.client = (this.did.client.data) ? this.did.client.data : ''
             this.tags = (this.did.tags.data) ? this.did.tags.data : []
+
+            var created_at = moment(this.did.created_at)
+            this.fromNow = created_at.fromNow()
+            this.createdAt = created_at.format("dddd, MMMM Do YYYY, h:mm:ss a")
         },
         methods: {
             deleteDid (e) {
                 e.preventDefault()
-                didbotBus.$emit('delete-did', this.did.id)
+                this.$didbotBus.$emit('delete-did', this.did.id)
             },
             showDetails (e) {
                 e.preventDefault()
@@ -52,11 +60,11 @@
             },
             getDidsByTag (e, tagId) {
                 e.preventDefault()
-                didbotBus.$emit('get-dids-by-tag', tagId)
+                this.$didbotBus.$emit('get-dids-by-tag', tagId)
             },
             getDidsByClient (e, clientId) {
                 e.preventDefault()
-                didbotBus.$emit('get-dids-by-client', clientId)
+                this.$didbotBus.$emit('get-dids-by-client', clientId)
             }
         }
     }

@@ -1,87 +1,61 @@
 <template>
     <div>
+        <ajax></ajax>
         <did-create></did-create>
-        <did-list :dids="dids"></did-list>
+        <did-filter></did-filter>
+        <did-list></did-list>
     </div>
 </template>
 
+
+
 <script>
-    import Vue from 'vue'
-
-    import axios from 'axios'
-
-    var didbotBus = new Vue()
-
-    import DidCreate from './components/DidCreate.vue'
+    import Ajax from './components/Ajax.vue'
     import DidList from './components/DidList.vue'
+    import DidCreate from './components/DidCreate.vue'
+    import DidFilter from './components/DidFilter.vue'
+
+    Vue.prototype.$didbotBus = new Vue()
+    Vue.prototype.$http = axios.create({
+        baseURL: (window.didbot) ? window.didbot.baseUrl : 'https://didbot.com/api/1.0/',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Authorization': (window.didbot) ? window.didbot.apiToken : '',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    });
 
     export default {
         name: 'didbot',
         data () {
             return {
-                dids: [],
                 geo: null,
-                axios: null
             }
         },
         mounted: function () {
             var didbotApp = this
 
-            this.axios = axios.create({
-                baseURL: (window.didbot.baseUrl) ? window.didbot.baseUrl : 'https://didbot.com/api/1.0/',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Authorization': (window.didbot.apiToken) ? window.didbot.apiToken : '',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            this.getDids()
-            didbotBus.$on('create-did', this.createDid)
-            didbotBus.$on('delete-did', this.deleteDid)
-
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
                     didbotApp.geo = position.coords.latitude + ',' + position.coords.longitude
                 }, function() {
-                    didbotApp.lookupGeoByIp();
+                    didbotApp.$didbotBus.$emit('lookup-geo', this.text);
+
                 })
             } else {
-                this.lookupGeoByIp();
+                didbotApp.$didbotBus.$emit('lookup-geo', this.text);
             }
 
         },
         methods: {
-            getDids () {
-                this.axios.get('dids')
-                    .then(response => {
-                        this.dids = response.data.data.reverse()
-                    })
-            },
-            createDid: function (text) {
-                this.axios.post('dids', {text: text, geo: this.geo})
-                    .then(response => {
-                        this.getDids()
-                    })
-            },
-            deleteDid (id) {
-                this.axios.delete('dids/' + id)
-                    .then(response => {
-                        this.getDids()
-                    })
-            },
-            lookupGeoByIp () {
-                this.axios.get('https://ipinfo.io')
-                    .then(response => {
-                        this.geo = response.data.loc
-                    })
-            }
-
+            //
         },
         components: {
+            Ajax,
             DidList,
-            DidCreate
+            DidCreate,
+            DidFilter
         }
     }
 </script>

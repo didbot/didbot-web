@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './Didbot'
+import Didbot from './Didbot'
 
 require('script-loader!../config/didbot')
 
