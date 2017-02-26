@@ -1,19 +1,31 @@
 <template>
-    <div class="row">
-        <div class="col-sm-6 form-group">
-            <label>Search Dids</label>
-            <input type="text" class="form-control" v-model="filters.q" placeholder="search...">
+    <div>
+        <div class="row">
+            <div class="col-sm-6 form-group">
+                <label>Search Dids</label>
+                <input type="text" class="form-control" v-model="filters.q" placeholder="search...">
+            </div>
+            <div class="col-sm-6 form-group">
+                <label>Search Tags</label>
+                <v-select taggable v-on:option:created="newOption" v-model="selectedTag" label="text" :options="tags"></v-select>
+            </div>
+            <div class="col-sm-6 form-group">
+                <label>Search Date</label><br>
+                <button-group :values="dateTypes" v-on:type-selected="setDateType"></button-group>
+                <date-range-picker v-if="dateType" :type="dateType" id="dfdfd" v-on:set-since-until="setSinceUntil"></date-range-picker>
+            </div>
         </div>
-        <div class="col-sm-6 form-group">
-            <label>Search Tags</label>
-            <v-select taggable v-on:option:created="newOption" v-model="selectedTag" label="text" :options="tags"></v-select>
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-default" v-on:click="clearFilters()">Clear</button>
+            </div>
         </div>
-    </div>
-
     </div>
 </template>
 <script>
     import vSelect from "vue-select"
+    import DateRangePicker from "./DateRangePicker.vue"
+    import ButtonGroup from "./ButtonGroup.vue"
 
     module.exports = {
         name: 'did-filter',
@@ -22,11 +34,21 @@
                 filters: {
                     q: null,
                     tag_id: null,
-                    client_id: null
+                    client_id: null,
+                    since: null,
+                    until: null
                 },
                 selectedTag: null,
                 tags: [],
-                clients: []
+                clients: [],
+                dateRange: null,
+                dateType: null,
+                dateTypes: {
+                    'single': 'Single',
+                    'before': 'Before',
+                    'after': 'After',
+                    'range': 'Range'
+                }
             }
         },
         mounted: function () {
@@ -35,16 +57,7 @@
                 this.tags = tags
             }.bind(this))
 
-            this.$didbotBus.$on('update-cursor', function(cursor){
-
-                this.$didbotBus.$emit('get-more-dids', {
-                    q: this.filters.q,
-                    tag_id: this.filters.tag_id,
-                    client_id: this.filters.client_id,
-                    cursor: cursor
-                })
-
-            }.bind(this))
+            this.$didbotBus.$on('update-cursor', this.updateCursor)
 
         },
         watch: {
@@ -53,6 +66,12 @@
                 this.$didbotBus.$emit('get-dids', this.filters)
             },
             'filters.tag_id': function () {
+                this.$didbotBus.$emit('get-dids', this.filters)
+            },
+            'filters.since': function () {
+                this.$didbotBus.$emit('get-dids', this.filters)
+            },
+            'filters.until': function () {
                 this.$didbotBus.$emit('get-dids', this.filters)
             },
             selectedTag: function() {
@@ -70,10 +89,39 @@
             },
             newOption: function(value) {
                 console.log(value)
+            },
+            setSinceUntil: function(picker){
+                this.filters.since = picker.since
+                this.filters.until = picker.until
+            },
+            updateCursor: function(cursor){
+                this.$didbotBus.$emit('get-more-dids', {
+                    q: this.filters.q,
+                    tag_id: this.filters.tag_id,
+                    client_id: this.filters.client_id,
+                    since: this.filters.since,
+                    until: this.filters.until,
+                    cursor: cursor
+                })
+            },
+            setDateType: function (type) {
+                this.dateType = type
+            },
+            clearFilters: function ()
+            {
+                this.filters.tag_id = null
+                this.filters.client_id = null
+                this.filters.since = null
+                this.filters.until = null
+                this.filters.cursor = null
+                this.dateType = null
+                this.selectedTag = null
             }
         },
         components: {
-            vSelect
+            vSelect,
+            DateRangePicker,
+            ButtonGroup
         }
     }
 </script>

@@ -1,3 +1,4 @@
+<style src="./assets/scss/did.sass" lang="sass"></style>
 <template>
     <div>
         <ajax></ajax>
@@ -6,9 +7,6 @@
         <did-list></did-list>
     </div>
 </template>
-
-
-
 <script>
     import Ajax from './components/Ajax.vue'
     import DidList from './components/DidList.vue'
@@ -59,4 +57,3 @@
         }
     }
 </script>
-<style src="./assets/scss/did.sass" lang="sass"></style>
