@@ -38,12 +38,16 @@
                 navigator.geolocation.getCurrentPosition(function (position) {
                     didbotApp.geo = position.coords.latitude + ',' + position.coords.longitude
                 }, function() {
-                    didbotApp.$didbotBus.$emit('lookup-geo', this.text);
+                    didbotApp.$didbotBus.$emit('lookup-geo');
 
                 })
             } else {
-                didbotApp.$didbotBus.$emit('lookup-geo', this.text);
+                didbotApp.$didbotBus.$emit('lookup-geo');
             }
+
+            this.$didbotBus.$on('set-geo', function(geo){
+                this.geo = geo
+            }.bind(this))
 
         },
         methods: {

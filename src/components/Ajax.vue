@@ -63,7 +63,7 @@
             lookupGeo () {
                 this.$http.get('https://ipinfo.io')
                     .then(response => {
-                        this.geo = response.data.loc
+                        this.$didbotBus.$emit('set-geo', response.data.loc)
                     })
             }
         }
