@@ -1,10 +1,18 @@
 <style src="./assets/scss/did.sass" lang="sass"></style>
 <template>
-    <div>
+    <div id="didbot">
         <ajax></ajax>
-        <did-create></did-create>
-        <did-filter></did-filter>
-        <did-list></did-list>
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab1default" data-toggle="tab" @click="toggle='create'"><i class="fa fa-plus" aria-hidden="true"></i></a></li>
+            <li><a href="#tab2default" data-toggle="tab" @click="toggle='search'"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+        </ul>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <did-create v-show="toggle == 'create'"></did-create>
+                <did-filter v-show="toggle == 'search'"></did-filter>
+            </div>
+            <did-list></did-list>
+        </div>
     </div>
 </template>
 <script>
@@ -29,6 +37,7 @@
         data () {
             return {
                 geo: null,
+                toggle: 'create'
             }
         },
         mounted: function () {

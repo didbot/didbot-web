@@ -1,23 +1,29 @@
 <template>
-    <div>
-        <div class="row">
-            <div class="col-sm-6 form-group">
-                <label>Search Dids</label>
-                <input type="text" class="form-control" v-model="filters.q" placeholder="search...">
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col-sm-12 form-group">
+                    <input type="text" class="form-control" v-model="filters.q" placeholder="Search text...">
+                </div>
             </div>
-            <div class="col-sm-6 form-group">
-                <label>Search Tags</label>
-                <v-select taggable v-on:option:created="newOption" v-model="selectedTag" label="text" :options="tags"></v-select>
-            </div>
-            <div class="col-sm-6 form-group">
-                <label>Search Date</label><br>
-                <button-group :values="dateTypes" v-on:type-selected="setDateType"></button-group>
-                <date-range-picker v-if="dateType" :type="dateType" id="dfdfd" v-on:set-since-until="setSinceUntil"></date-range-picker>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <v-select v-model="selectedTag" label="text" :options="tags" placeholder="Search tag..."></v-select>
+                </div>
+                <div class="col-sm-6 form-group">
+                    <v-select v-model="selectedTag" label="text" :options="tags" placeholder="Search client..."></v-select>
+                </div>
+                <div class="col-sm-12">
+                    <button class="btn btn-default" v-on:click="clearFilters()">Clear</button>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <button class="btn btn-default" v-on:click="clearFilters()">Clear</button>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <button-group :values="dateTypes" v-on:type-selected="setDateType"></button-group>
+            </div>
+            <div class="form-group">
+                <date-range-picker v-if="dateType" :type="dateType" id="dfdfd" v-on:set-since-until="setSinceUntil"></date-range-picker>
             </div>
         </div>
     </div>
@@ -38,6 +44,7 @@
                     since: null,
                     until: null
                 },
+                advanced: null,
                 selectedTag: null,
                 tags: [],
                 clients: [],
@@ -58,6 +65,16 @@
             }.bind(this))
 
             this.$didbotBus.$on('update-cursor', this.updateCursor)
+
+            // these filters can be set by other components in the app
+            this.$didbotBus.$on('get-dids-by-tag', function(tag_id){
+
+                // loop over the tag array
+                for (let tag of this.tags) {
+                    // and if there's a match push it onto the selected tags array
+                    if(tag.id == tag_id) this.selectedTag = tag
+                }
+            }.bind(this))
 
         },
         watch: {
@@ -86,9 +103,6 @@
         methods: {
             getOptionValue: function(selected) {
                 return selected && selected['id'] ? selected.id : null
-            },
-            newOption: function(value) {
-                console.log(value)
             },
             setSinceUntil: function(picker){
                 this.filters.since = picker.since
