@@ -19,6 +19,8 @@
             this.$didbotBus.$on('delete-did', this.deleteDid)
 
             this.$didbotBus.$on('get-tags', this.getTags)
+            this.$didbotBus.$on('create-tag', this.createTag)
+
 
             this.$didbotBus.$on('lookup-geo', this.lookupGeo)
         },
@@ -38,8 +40,12 @@
                         this.$didbotBus.$emit('get-more-dids-response', response.data)
                     })
             }, 250),
-            createDid: function (text) {
-                this.$http.post('dids', {text: text, geo: this.geo})
+            createDid: function (body) {
+                this.$http.post('dids', {
+                        text: body.text,
+                        geo: this.geo,
+                        tags: body.tags
+                    })
                     .then(response => {
                         this.getDids()
                     })
@@ -58,7 +64,12 @@
                         this.$didbotBus.$emit('set-tags', response.data.data)
                     })
             },
-
+            createTag: function (body) {
+                this.$http.post('tags', body)
+                    .then(response => {
+                        this.getTags()
+                    })
+            },
             // Other
             lookupGeo () {
                 this.$http.get('https://ipinfo.io')
