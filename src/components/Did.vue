@@ -12,8 +12,10 @@
                 <div class="col-sm-3"><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="#">Los
                     Angeles</a></div>
                 <div class="col-sm-3">
-                    <i class="fa fa-tags" aria-hidden="true"></i>
-                    <a v-for="tag in tags" href="#" @click="getDidsByTag($event, tag.id)">{{tag.text}}</a>
+                    <span class="did-tag" v-for="tag in tags">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        <a href="#" @click="getDidsByTag($event, tag.id)">{{tag.text}}</a>
+                    </span>
                 </div>
                 <div class="col-sm-4 text-right">
                     {{createdAt}}
