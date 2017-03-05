@@ -8,21 +8,20 @@
         </div>
         <div v-if="details" class="secondary">
             <div class="row">
-                <div class="col-sm-2"><i class="fa fa-desktop" aria-hidden="true"></i> <a href="#" @click="getDidsByTag($event, client.id)">{{client.name}}</a></div>
-                <div class="col-sm-3"><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="#">Los
-                    Angeles</a></div>
-                <div class="col-sm-3">
-                    <span class="did-tag" v-for="tag in tags">
-                        <i class="fa fa-tags" aria-hidden="true"></i>
-                        <a href="#" @click="getDidsByTag($event, tag.id)">{{tag.text}}</a>
-                    </span>
-                </div>
+                <div class="col-sm-4"><i class="fa fa-desktop" aria-hidden="true"></i> <a href="#" @click="getDidsBySource($event, did.source.data.id)">{{did.source.data.name}}</a></div>
+                <div class="col-sm-4"><span v-if="did.location"><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="#">did.location.data.name</a></span></div>
                 <div class="col-sm-4 text-right">
                     {{createdAt}}
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12 text-right"><a href="#" @click="deleteDid($event)">delete</a></div>
+                <div class="col-sm-10">
+                    <span class="did-tag" v-for="tag in tags">
+                        <i class="fa fa-tags" aria-hidden="true"></i>
+                        <a href="#" @click="getDidsByTag($event, tag.id)">{{tag.text}}</a>
+                    </span>
+                </div>
+                <div class="col-sm-2 text-right"><a href="#" @click="deleteDid($event)">delete</a></div>
             </div>
         </div>
     </div>
@@ -37,14 +36,12 @@
         data () {
             return {
                 details: false,
-                client: false,
                 fromNow: null,
                 createdAt: null,
                 tags: []
             }
         },
         mounted: function () {
-            this.client = (this.did.client.data) ? this.did.client.data : ''
             this.tags = (this.did.tags.data) ? this.did.tags.data : []
 
             var created_at = moment(this.did.created_at)
@@ -63,10 +60,12 @@
             getDidsByTag (e, tagId) {
                 e.preventDefault()
                 this.$didbotBus.$emit('get-dids-by-tag', tagId)
+                this.$didbotBus.$emit('set-toggle', 'search')
             },
-            getDidsByClient (e, clientId) {
+            getDidsBySource (e, sourceId) {
                 e.preventDefault()
-                this.$didbotBus.$emit('get-dids-by-client', clientId)
+                this.$didbotBus.$emit('get-dids-by-source', sourceId)
+                this.$didbotBus.$emit('set-toggle', 'search')
             }
         }
     }

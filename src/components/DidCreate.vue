@@ -27,13 +27,21 @@
             return {
                 text: null,
                 selectedTags: [],
-                tags: []
+                tags: [],
+                geo: null
             }
         },
         mounted: function () {
             this.$didbotBus.$on('set-tags', function (tags) {
                 this.tags = tags
             }.bind(this))
+
+            let didCreate = this
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    didCreate.geo = position.coords.latitude + ',' + position.coords.longitude
+                })
+            }
         },
         computed: {
             tagIds: function () {
@@ -65,7 +73,8 @@
 
                 var body = {
                     text: this.text,
-                    tags: this.tagIds
+                    tags: this.tagIds,
+                    geo: this.geo
                 }
                 this.$didbotBus.$emit('create-did', body)
                 this.text = null

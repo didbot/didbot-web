@@ -11,10 +11,7 @@
                     <v-select v-model="selectedTag" label="text" :options="tags" placeholder="Search tag..."></v-select>
                 </div>
                 <div class="col-sm-6 form-group">
-                    <v-select v-model="selectedTag" label="text" :options="tags" placeholder="Search client..."></v-select>
-                </div>
-                <div class="col-sm-12">
-                    <button class="btn btn-default" v-on:click="clearFilters()">Clear</button>
+                    <v-select v-model="selectedSource" label="name" :options="sources" placeholder="Search source..."></v-select>
                 </div>
             </div>
         </div>
@@ -25,6 +22,9 @@
             <div class="form-group">
                 <date-range-picker v-if="dateType" :type="dateType" id="dfdfd" v-on:set-since-until="setSinceUntil"></date-range-picker>
             </div>
+        </div>
+        <div class="col-sm-12">
+            <button class="btn btn-default" v-on:click="clearFilters()">Clear</button>
         </div>
     </div>
 </template>
@@ -40,14 +40,15 @@
                 filters: {
                     q: null,
                     tag_id: null,
-                    client_id: null,
+                    source_id: null,
                     since: null,
                     until: null
                 },
                 advanced: null,
                 selectedTag: null,
+                selectedSource: null,
                 tags: [],
-                clients: [],
+                sources: [],
                 dateRange: null,
                 dateType: null,
                 dateTypes: {
@@ -60,8 +61,12 @@
         },
         mounted: function () {
             this.$didbotBus.$emit('get-tags')
+            this.$didbotBus.$emit('get-sources')
             this.$didbotBus.$on('set-tags', function(tags){
                 this.tags = tags
+            }.bind(this))
+            this.$didbotBus.$on('set-sources', function(sources){
+                this.sources = sources
             }.bind(this))
 
             this.$didbotBus.$on('update-cursor', this.updateCursor)
@@ -73,6 +78,15 @@
                 for (let tag of this.tags) {
                     // and if there's a match push it onto the selected tags array
                     if(tag.id == tag_id) this.selectedTag = tag
+                }
+            }.bind(this))
+
+            this.$didbotBus.$on('get-dids-by-source', function(source_id){
+
+                // loop over the tag array
+                for (let source of this.sources) {
+                    // and if there's a match push it onto the selected tags array
+                    if(source.id == source_id) this.selectedSource = source
                 }
             }.bind(this))
 
@@ -91,6 +105,9 @@
             'filters.until': function () {
                 this.$didbotBus.$emit('get-dids', this.filters)
             },
+            'filters.source_id': function () {
+                this.$didbotBus.$emit('get-dids', this.filters)
+            },
             selectedTag: function() {
                 if(this.selectedTag == null){
                     this.filters.tag_id = null
@@ -98,6 +115,14 @@
                 }
 
                 this.filters.tag_id = this.selectedTag['id'] ? this.selectedTag.id : null
+            },
+            selectedSource: function() {
+                if(this.selectedSource == null){
+                    this.filters.source_id = null
+                    return
+                }
+
+                this.filters.source_id = this.selectedSource['id'] ? this.selectedSource.id : null
             }
         },
         methods: {
@@ -124,12 +149,13 @@
             clearFilters: function ()
             {
                 this.filters.tag_id = null
-                this.filters.client_id = null
+                this.filters.source_id = null
                 this.filters.since = null
                 this.filters.until = null
                 this.filters.cursor = null
                 this.dateType = null
                 this.selectedTag = null
+                this.selectedSource = null
             }
         },
         components: {

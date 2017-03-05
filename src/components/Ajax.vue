@@ -21,8 +21,7 @@
             this.$didbotBus.$on('get-tags', this.getTags)
             this.$didbotBus.$on('create-tag', this.createTag)
 
-
-            this.$didbotBus.$on('lookup-geo', this.lookupGeo)
+            this.$didbotBus.$on('get-sources', this.getSources)
         },
         methods: {
             // Dids
@@ -56,7 +55,6 @@
                         this.getDids()
                     })
             },
-
             // Tags
             getTags() {
                 this.$http.get('tags')
@@ -70,11 +68,11 @@
                         this.getTags()
                     })
             },
-            // Other
-            lookupGeo () {
-                this.$http.get('https://ipinfo.io')
+            // Tags
+            getSources() {
+                this.$http.get('sources')
                     .then(response => {
-                        this.$didbotBus.$emit('set-geo', response.data.loc)
+                        this.$didbotBus.$emit('set-sources', response.data.data)
                     })
             }
         }

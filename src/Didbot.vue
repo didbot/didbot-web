@@ -36,26 +36,12 @@
         name: 'didbot',
         data () {
             return {
-                geo: null,
                 toggle: 'create'
             }
         },
         mounted: function () {
-            var didbotApp = this
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    didbotApp.geo = position.coords.latitude + ',' + position.coords.longitude
-                }, function() {
-                    didbotApp.$didbotBus.$emit('lookup-geo');
-
-                })
-            } else {
-                didbotApp.$didbotBus.$emit('lookup-geo');
-            }
-
-            this.$didbotBus.$on('set-geo', function(geo){
-                this.geo = geo
+            this.$didbotBus.$on('set-toggle', function(toggle){
+                if(this.toggle != toggle) this.toggle = toggle
             }.bind(this))
 
         },

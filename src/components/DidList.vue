@@ -3,7 +3,9 @@
         <li v-for="did in dids" class="list-group-item">
             <did :did="did"></did>
         </li>
-        <infinite-loading :on-infinite="loadDids" ref="infiniteLoading"></infinite-loading>
+        <infinite-loading :on-infinite="loadDids" ref="infiniteLoading">
+            <span slot="no-results">- end of results -</span>
+        </infinite-loading>
     </ul>
 </template>
 
