@@ -31,12 +31,18 @@
                     .then(response => {
                         this.$didbotBus.$emit('get-dids-response', response.data)
                     })
+                    .catch(error => {
+                        this.$didbotBus.$emit('set-error', error)
+                    })
             }, 250),
             getMoreDids: _.debounce(function (filters) {
                 var qs = querystring.stringify( filters )
                 this.$http.get('dids?' + qs)
                     .then(response => {
                         this.$didbotBus.$emit('get-more-dids-response', response.data)
+                    })
+                    .catch(error => {
+                        this.$didbotBus.$emit('set-error', error)
                     })
             }, 250),
             createDid: function (body) {
@@ -48,11 +54,17 @@
                     .then(response => {
                         this.getDids()
                     })
+                    .catch(error => {
+                        this.$didbotBus.$emit('set-error', error)
+                    })
             },
             deleteDid (id) {
                 this.$http.delete('dids/' + id)
                     .then(response => {
                         this.getDids()
+                    })
+                    .catch(error => {
+                        this.$didbotBus.$emit('set-error', error)
                     })
             },
             // Tags
@@ -61,11 +73,17 @@
                     .then(response => {
                         this.$didbotBus.$emit('set-tags', response.data.data)
                     })
+                    .catch(error => {
+                        this.$didbotBus.$emit('set-error', error)
+                    })
             },
             createTag: function (body) {
                 this.$http.post('tags', body)
                     .then(response => {
                         this.getTags()
+                    })
+                    .catch(error => {
+                        this.$didbotBus.$emit('set-error', error)
                     })
             },
             // Tags
@@ -73,6 +91,9 @@
                 this.$http.get('sources')
                     .then(response => {
                         this.$didbotBus.$emit('set-sources', response.data.data)
+                    })
+                    .catch(error => {
+                        this.$didbotBus.$emit('set-error', error)
                     })
             }
         }

@@ -2,6 +2,7 @@
 <template>
     <div id="didbot">
         <ajax></ajax>
+        <error></error>
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab1default" data-toggle="tab" @click="toggle='create'"><i class="fa fa-plus" aria-hidden="true"></i></a></li>
             <li><a href="#tab2default" data-toggle="tab" @click="toggle='search'"><i class="fa fa-search" aria-hidden="true"></i></a></li>
@@ -17,6 +18,7 @@
 </template>
 <script>
     import Ajax from './components/Ajax.vue'
+    import Error from './components/Error.vue'
     import DidList from './components/DidList.vue'
     import DidCreate from './components/DidCreate.vue'
     import DidFilter from './components/DidFilter.vue'
@@ -50,6 +52,7 @@
         },
         components: {
             Ajax,
+            Error,
             DidList,
             DidCreate,
             DidFilter
