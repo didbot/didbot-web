@@ -18,16 +18,16 @@
 <script>
     module.exports = {
         name: 'button-group',
-        props: ['values','default'],
+        props: ['values', 'default'],
         data () {
             return {
                 selected: null
             }
         },
         methods: {
-            changeSelectVal: function(val) {
-                this.selected = val;
-                this.$emit('type-selected',val)
+            changeSelectVal: function (val) {
+                this.selected = val
+                this.$emit('type-selected', val)
             }
         }
     }

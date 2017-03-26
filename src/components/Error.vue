@@ -29,13 +29,13 @@
         mounted: function () {
             this.$didbotBus.$on('set-error', function (error) {
                 this.errors.push(error)
-            }.bind(this));
+            }.bind(this))
         },
         methods: {
             clearError: function (e, key) {
                 e.preventDefault()
                 let index = this.errors.indexOf(key)
-                this.errors.splice(index, 1);
+                this.errors.splice(index, 1)
             }
         }
     }

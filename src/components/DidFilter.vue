@@ -29,9 +29,9 @@
     </div>
 </template>
 <script>
-    import vSelect from "vue-select"
-    import DateRangePicker from "./DateRangePicker.vue"
-    import ButtonGroup from "./ButtonGroup.vue"
+    import vSelect from 'vue-select'
+    import DateRangePicker from './DateRangePicker.vue'
+    import ButtonGroup from './ButtonGroup.vue'
 
     module.exports = {
         name: 'did-filter',
@@ -62,34 +62,31 @@
         mounted: function () {
             this.$didbotBus.$emit('get-tags')
             this.$didbotBus.$emit('get-sources')
-            this.$didbotBus.$on('set-tags', function(tags){
+            this.$didbotBus.$on('set-tags', function (tags) {
                 this.tags = tags
             }.bind(this))
-            this.$didbotBus.$on('set-sources', function(sources){
+            this.$didbotBus.$on('set-sources', function (sources) {
                 this.sources = sources
             }.bind(this))
 
             this.$didbotBus.$on('update-cursor', this.updateCursor)
 
             // these filters can be set by other components in the app
-            this.$didbotBus.$on('get-dids-by-tag', function(tag_id){
-
+            this.$didbotBus.$on('get-dids-by-tag', function (tagId) {
                 // loop over the tag array
                 for (let tag of this.tags) {
                     // and if there's a match push it onto the selected tags array
-                    if(tag.id == tag_id) this.selectedTag = tag
+                    if (tag.id === tagId) this.selectedTag = tag
                 }
             }.bind(this))
 
-            this.$didbotBus.$on('get-dids-by-source', function(source_id){
-
+            this.$didbotBus.$on('get-dids-by-source', function (sourceId) {
                 // loop over the tag array
                 for (let source of this.sources) {
                     // and if there's a match push it onto the selected tags array
-                    if(source.id == source_id) this.selectedSource = source
+                    if (source.id === sourceId) this.selectedSource = source
                 }
             }.bind(this))
-
         },
         watch: {
             // update the dids list any time params change
@@ -108,16 +105,16 @@
             'filters.source_id': function () {
                 this.$didbotBus.$emit('get-dids', this.filters)
             },
-            selectedTag: function() {
-                if(this.selectedTag == null){
+            selectedTag: function () {
+                if (this.selectedTag == null) {
                     this.filters.tag_id = null
                     return
                 }
 
                 this.filters.tag_id = this.selectedTag['id'] ? this.selectedTag.id : null
             },
-            selectedSource: function() {
-                if(this.selectedSource == null){
+            selectedSource: function () {
+                if (this.selectedSource == null) {
                     this.filters.source_id = null
                     return
                 }
@@ -126,14 +123,14 @@
             }
         },
         methods: {
-            getOptionValue: function(selected) {
+            getOptionValue: function (selected) {
                 return selected && selected['id'] ? selected.id : null
             },
-            setSinceUntil: function(picker){
+            setSinceUntil: function (picker) {
                 this.filters.since = picker.since
                 this.filters.until = picker.until
             },
-            updateCursor: function(cursor){
+            updateCursor: function (cursor) {
                 this.$didbotBus.$emit('get-more-dids', {
                     q: this.filters.q,
                     tag_id: this.filters.tag_id,
@@ -146,8 +143,7 @@
             setDateType: function (type) {
                 this.dateType = type
             },
-            clearFilters: function ()
-            {
+            clearFilters: function () {
                 this.filters.tag_id = null
                 this.filters.source_id = null
                 this.filters.since = null

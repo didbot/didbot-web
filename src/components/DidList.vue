@@ -27,34 +27,29 @@
             }
         },
         mounted: function () {
-
-
-            this.$didbotBus.$on('get-dids-response', function(response){
+            this.$didbotBus.$on('get-dids-response', function (response) {
                 this.cursor = response.meta.cursor
                 this.dids = response.data
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset')
             }.bind(this))
 
-            this.$didbotBus.$on('get-more-dids-response', function(response){
-
+            this.$didbotBus.$on('get-more-dids-response', function (response) {
                 this.cursor = response.meta.cursor
                 this.dids = this.dids.concat(response.data)
                 this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
-
             }.bind(this))
         },
         methods: {
             // note that this method will be called on initial load
-            loadDids() {
-
+            loadDids () {
                 // if cursor.count === null this is the first load.
-                if(this.cursor.count === null){
+                if (this.cursor.count === null) {
                     this.$didbotBus.$emit('get-dids')
                     return
                 }
 
                 // if cursor.next is null or === 1 then there are no more records
-                if(!this.cursor.next || this.cursor.next === 1) {
+                if (!this.cursor.next || this.cursor.next === 1) {
                     this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
                     return
                 }

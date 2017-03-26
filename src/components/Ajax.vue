@@ -2,16 +2,17 @@
 </template>
 <script>
     import querystring from 'querystring'
+    import _ from 'lodash'
 
     module.exports = {
         name: 'ajax',
         mounted: function () {
-            this.$didbotBus.$on('get-dids', function(filters){
-                this.getDids(filters);
+            this.$didbotBus.$on('get-dids', function (filters) {
+                this.getDids(filters)
             }.bind(this))
 
-            this.$didbotBus.$on('get-more-dids', function(filters){
-                this.getMoreDids(filters);
+            this.$didbotBus.$on('get-more-dids', function (filters) {
+                this.getMoreDids(filters)
             }.bind(this))
 
             this.$didbotBus.$on('create-did', this.createDid)
@@ -26,7 +27,7 @@
         methods: {
             // Dids
             getDids: _.debounce(function (filters) {
-                var qs = querystring.stringify( filters )
+                var qs = querystring.stringify(filters)
                 this.$http.get('dids?' + qs)
                     .then(response => {
                         this.$didbotBus.$emit('get-dids-response', response.data)
@@ -36,7 +37,7 @@
                     })
             }, 250),
             getMoreDids: _.debounce(function (filters) {
-                var qs = querystring.stringify( filters )
+                var qs = querystring.stringify(filters)
                 this.$http.get('dids?' + qs)
                     .then(response => {
                         this.$didbotBus.$emit('get-more-dids-response', response.data)
@@ -68,7 +69,7 @@
                     })
             },
             // Tags
-            getTags() {
+            getTags () {
                 this.$http.get('tags')
                     .then(response => {
                         this.$didbotBus.$emit('set-tags', response.data.data)
@@ -87,7 +88,7 @@
                     })
             },
             // Tags
-            getSources() {
+            getSources () {
                 this.$http.get('sources')
                     .then(response => {
                         this.$didbotBus.$emit('set-sources', response.data.data)

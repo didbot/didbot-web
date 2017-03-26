@@ -4,11 +4,12 @@
 </template>
 
 <script>
-    import daterangepicker from "bootstrap-daterangepicker"
+    import moment from 'moment'
+    import $ from 'jquery'
 
     module.exports = {
         name: 'date-range-picker',
-        props:['id','type'],
+        props: ['id', 'type'],
         mounted: function () {
             this.loadDateRangePicker(this.type)
         },
@@ -19,63 +20,58 @@
         },
         methods: {
             loadDateRangePicker: function (type) {
+                var config = (type === 'range') ? this.getRangeConfig() : this.getSingleConfig()
 
-                var config = (type == 'range') ? this.getRangeConfig() : this.getSingleConfig()
-
-                var drp = $('input[name="'+ this.id +'"]')
+                $('input[name="' + this.id + '"]')
                     .daterangepicker(config)
-                    .on('apply.daterangepicker', function(ev, picker) {
-
+                    .on('apply.daterangepicker', function (ev, picker) {
                     var since = null
                     var until = null
-                    switch(type) {
+                    switch (type) {
                         case 'single':
                             since = picker.startDate.toISOString()
                             until = picker.endDate.toISOString()
-                            break;
+                            break
                         case 'before':
                             until = picker.endDate.toISOString()
-                            break;
+                            break
                         case 'after':
                             since = picker.startDate.toISOString()
-                            break;
+                            break
                         case 'range':
                             since = picker.startDate.toISOString()
                             until = picker.endDate.toISOString()
-                            break;
+                            break
                     }
-
-                    this.$emit('set-since-until', {since:since, until:until})
-
+                    this.$emit('set-since-until', { since: since, until: until })
                 }.bind(this)).data('daterangepicker').show()
             },
-            getRangeConfig(){
+            getRangeConfig () {
                 var now = moment()
 
                 return {
                     autoApply: true,
                     ranges: {
-                        "Today": [
+                        'Today': [
                             now.clone().startOf('day'),
                             now.clone().endOf('day')
                         ],
-                        "Yesterday": [
+                        'Yesterday': [
                             now.clone().subtract(1, 'days').startOf('day'),
                             now.clone().subtract(1, 'days').endOf('day')
                         ],
-                        "Last 7 Days": [
+                        'Last 7 Days': [
                             now.clone().subtract(7, 'days').startOf('day'),
                             now.clone().endOf('day')
                         ],
-                        "Last 30 Days": [
+                        'Last 30 Days': [
                             now.clone().subtract(30, 'days').startOf('day'),
                             now.clone().endOf('day')
-                        ],
+                        ]
                     }
                 }
-
             },
-            getSingleConfig(){
+            getSingleConfig () {
                 return {
                     autoApply: true,
                     singleDatePicker: true

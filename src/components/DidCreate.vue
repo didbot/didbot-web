@@ -19,7 +19,7 @@
     </div>
 </template>
 <script>
-    import vSelect from "vue-select"
+    import vSelect from 'vue-select'
 
     module.exports = {
         name: 'did-create',
@@ -47,21 +47,19 @@
             tagIds: function () {
                 var tagIds = []
                 for (let selectedTag of this.selectedTags) {
-
                     // if this is a new tag it won't have an id so match up the id from the tags array
-                    if(selectedTag.id == undefined){
+                    if (selectedTag.id === undefined) {
                         for (let tag of this.tags) {
-                            if(tag.text == selectedTag.text){
+                            if (tag.text === selectedTag.text) {
                                 selectedTag.id = tag.id
                             }
                         }
                     }
 
                     // double check that a tag has been set, and if so add to the tags array
-                    if(selectedTag.id){
+                    if (selectedTag.id) {
                         tagIds.push(selectedTag.id)
                     }
-
                 }
                 return tagIds
             }
@@ -69,7 +67,7 @@
         methods: {
             createDid: function (e) {
                 e.preventDefault()
-                if(!this.text) return
+                if (!this.text) return
 
                 var body = {
                     text: this.text,
@@ -80,7 +78,7 @@
                 this.text = null
                 this.selectedTags = []
             },
-            createTag: function(tag) {
+            createTag: function (tag) {
                 this.$didbotBus.$emit('create-tag', tag)
             }
         },

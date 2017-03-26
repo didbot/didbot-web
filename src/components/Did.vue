@@ -44,9 +44,9 @@
         mounted: function () {
             this.tags = (this.did.tags.data) ? this.did.tags.data : []
 
-            var created_at = moment(this.did.created_at)
-            this.fromNow = created_at.fromNow()
-            this.createdAt = created_at.format("dddd, MMMM Do YYYY, h:mm:ss a")
+            var createdAt = moment(this.did.created_at)
+            this.fromNow = createdAt.fromNow()
+            this.createdAt = createdAt.format('dddd, MMMM Do YYYY, h:mm:ss a')
         },
         methods: {
             deleteDid (e) {

@@ -22,6 +22,8 @@
     import DidList from './components/DidList.vue'
     import DidCreate from './components/DidCreate.vue'
     import DidFilter from './components/DidFilter.vue'
+    import axios from 'axios'
+    import Vue from 'vue'
 
     Vue.prototype.$didbotBus = new Vue()
     Vue.prototype.$http = axios.create({
@@ -32,7 +34,7 @@
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-    });
+    })
 
     export default {
         name: 'didbot',
@@ -42,10 +44,9 @@
             }
         },
         mounted: function () {
-            this.$didbotBus.$on('set-toggle', function(toggle){
-                if(this.toggle != toggle) this.toggle = toggle
+            this.$didbotBus.$on('set-toggle', function (toggle) {
+                if (this.toggle !== toggle) this.toggle = toggle
             }.bind(this))
-
         },
         methods: {
             //
